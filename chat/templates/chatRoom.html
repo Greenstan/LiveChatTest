@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat {{roomName}}</title>
+    <style>
+        .userMessage{
+            color:blue;
+            margin-left: 450px;
+        }
+        .nonUserMessage{
+            margin-left: -450px;
+        }
+
+    </style>
+
+</head>
+<body style="background-color: blanchedalmond;">
+    <h1>Welcome to chat: {{roomName}}</h1>
+    <br>
+        <div style="text-align:center;font-size: 30px;">
+            <div id="chatArea">
+                <!-- {%for mess in messages%}
+                    {%if username == mess.user %}
+                        <div class="userMessage">
+                            {{mess.user}}: {{mess.content}}
+                        </div>
+                    {%else%}
+                        <div class="nonUserMessage">
+                            {{mess.user}}: {{mess.content}}
+                        </div>
+                    {%endif%}
+                {%endfor%} -->
+            </div>
+        </div>
+        <div style="position:fixed;bottom:20px;" >
+            <input  style="width:300%;" id="textSpace" type="text" placeholder="Type a message">
+            <input id="enterButton" type="button" value="Send">
+        </div>
+
+    {{roomName | json_script:"room" }}
+    {{username | json_script:"user" }}
+
+
+
+    <script>
+        const Room = JSON.parse(document.getElementById('room').textContent);
+        const User = JSON.parse(document.getElementById("user").textContent);
+
+        console.log(User)
+        "{% for mess in messages %}"
+            var savedMessages = document.createElement("div");
+            document.getElementById("chatArea").appendChild(savedMessages);
+            if("{{mess.user}}" == User) {
+                savedMessages.setAttribute("class", "userMessage");
+
+            }else{
+                savedMessages.setAttribute("class", "nonUserMessage");
+            }
+            savedMessages.innerText = ("{{mess.user}}" + ":" + "{{mess.content}}" + "\n");
+        "{%endfor%}"
+
+
+        const webSocket = new WebSocket ('ws://' + window.location.host + '/ws/chat/' +Room+ '/');
+
+        webSocket.onclose = function(e){
+            console.error("WebSocket is shutting down")
+        }
+
+        webSocket.onmessage = function(e){
+            const receivedMessage = JSON.parse(e.data);
+            console.log(receivedMessage);
+            
+            const newMess = document.createElement("div");
+            document.getElementById("chatArea").appendChild(newMess);
+
+            if(receivedMessage.User == User ) {
+                newMess.setAttribute("class", "userMessage");
+
+            }else{
+                newMess.setAttribute("class", "nonUserMessage");
+            }
+            
+            newMess.innerText = (receivedMessage.User + ": " + receivedMessage.message + "\n");
+
+            // document.querySelector("#chatArea").value += (receivedMessage.User + " " + receivedMessage.message + "\n");
+        }
+        document.querySelector("#textSpace").focus()
+        document.querySelector("#textSpace").onkeyup = function(e){
+            if (e.keyCode == 13){
+                document.querySelector("#enterButton").click();
+            }
+        }
+
+        document.querySelector("#enterButton").onclick = function(e) {
+            var message = document.querySelector("#textSpace").value;
+            webSocket.send(JSON.stringify({
+                'message':message,
+                 "user": User,
+                 "room":Room
+                }));
+            document.querySelector("#textSpace").value = " "; 
+        }
+
+
+    </script>
+</body>
+</html>

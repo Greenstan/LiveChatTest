@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script  src="{%static 'js/jquery.js' %}" ></script>
+    <title>Homepage</title>
+</head>
+<body>
+    <input id="RoomName" type="text" placeholder="Room Name">
+    <input id="username" type="text"  placeholder="username">
+    <input id="enter" type="button" value="Send">
+
+        <script>
+            document.querySelector("#RoomName").focus();
+            document.querySelector("#RoomName").onkeyup = function(e){
+                if (e.keyCode == 13){
+                    document.querySelector("#enter").click();
+                }
+            }
+            document.querySelector("#enter").onclick = function(e){
+                var chatroomName = document.querySelector("#RoomName").value;
+                var username = document.querySelector("#username").value
+                window.location.pathname = '/chatRoom/' + chatroomName + '/' + username;
+            }
+
+        </script>    
+</body>
+</html>
