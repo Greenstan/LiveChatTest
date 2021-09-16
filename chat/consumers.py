@@ -60,7 +60,6 @@ class ChatWsConsumer (WebsocketConsumer):
         user = data['User']
 
 
-
         # Sends data back to websocket
         self.send(text_data = json.dumps({
             'message': message,

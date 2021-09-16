@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from chat.models import user, message
 
 # Create your views here.
@@ -17,3 +17,6 @@ def chatRoom(request, roomName, username):
     return render(request, 'chatRoom.html', { "roomName" : roomName, "username":Name , "messages": savedMessages}) 
 
 
+def deleteMessage (request, roomName, username):
+    message.objects.filter(group=roomName).delete()
+    return redirect("/chatRoom/{0}/{1}".format(roomName,username))

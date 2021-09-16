@@ -13,32 +13,27 @@
         .nonUserMessage{
             margin-left: -450px;
         }
-
     </style>
 
 </head>
 <body style="background-color: blanchedalmond;">
     <h1>Welcome to chat: {{roomName}}</h1>
+
+    <div style=" background-color: red;position: fixed;height:5% ; width: 5%;  right: 10px;">
+       <div style="text-align: center;transform: translate(0,75%);"> 
+           <a href="/deleteChatMess/{{roomName}}/{{username}}" style="color:white;text-decoration:none;"> Delete all </a>
+        </div>
+    </div>
     <br>
         <div style="text-align:center;font-size: 30px;">
-            <div id="chatArea">
-                <!-- {%for mess in messages%}
-                    {%if username == mess.user %}
-                        <div class="userMessage">
-                            {{mess.user}}: {{mess.content}}
-                        </div>
-                    {%else%}
-                        <div class="nonUserMessage">
-                            {{mess.user}}: {{mess.content}}
-                        </div>
-                    {%endif%}
-                {%endfor%} -->
+            <div style="margin-bottom: 8%;" id="chatArea">
             </div>
         </div>
-        <div style="position:fixed;bottom:20px;" >
-            <input  style="width:300%;" id="textSpace" type="text" placeholder="Type a message">
-            <input id="enterButton" type="button" value="Send">
-        </div>
+
+    <div style="position:fixed; bottom:1px; width: 290%; height: 10%; background-color:blue;" >
+        <input style="width: 33%; height: 45%;" id="textSpace" type="text" placeholder="Type a message">
+        <input style=" height: 50%;"id="enterButton" type="button" value="Send">
+    </div>
 
     {{roomName | json_script:"room" }}
     {{username | json_script:"user" }}
@@ -50,6 +45,7 @@
         const User = JSON.parse(document.getElementById("user").textContent);
 
         console.log(User)
+        // Display already existing messages in the room
         "{% for mess in messages %}"
             var savedMessages = document.createElement("div");
             document.getElementById("chatArea").appendChild(savedMessages);
@@ -59,7 +55,7 @@
             }else{
                 savedMessages.setAttribute("class", "nonUserMessage");
             }
-            savedMessages.innerText = ("{{mess.user}}" + ":" + "{{mess.content}}" + "\n");
+            savedMessages.innerText = ("{{mess.user}}" + ": " + "{{mess.content}}" + "\n");
         "{%endfor%}"
 
 
@@ -85,7 +81,7 @@
             
             newMess.innerText = (receivedMessage.User + ": " + receivedMessage.message + "\n");
 
-            // document.querySelector("#chatArea").value += (receivedMessage.User + " " + receivedMessage.message + "\n");
+
         }
         document.querySelector("#textSpace").focus()
         document.querySelector("#textSpace").onkeyup = function(e){
@@ -94,7 +90,7 @@
             }
         }
 
-        document.querySelector("#enterButton").onclick = function(e) {
+        document.querySelector("#enterButton").onclick = function(e) {     
             var message = document.querySelector("#textSpace").value;
             webSocket.send(JSON.stringify({
                 'message':message,
