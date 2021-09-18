@@ -5,6 +5,9 @@ from asgiref.sync import async_to_sync
 
 from chat.models import message,user
 
+
+# RUN docker run -p 6379:6379 -d redis:5 in terminal
+
 class ChatWsConsumer (WebsocketConsumer):
     # class method to establish connection
     def connect(self):
@@ -70,4 +73,3 @@ class ChatWsConsumer (WebsocketConsumer):
     def messToUser(self, username, text, roomChat):
 
         message.objects.create(content=text, group=roomChat, user=user.objects.get(name=username))
-        print("New message saved")

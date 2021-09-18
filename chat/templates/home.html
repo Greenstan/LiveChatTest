@@ -9,21 +9,21 @@
     <title>Homepage</title>
 </head>
 <body>
-    <input id="RoomName" type="text" placeholder="Room Name">
+    <!-- <input id="RoomName" type="text" placeholder="Room Name"> -->
     <input id="username" type="text"  placeholder="username">
     <input id="enter" type="button" value="Send">
 
         <script>
-            document.querySelector("#RoomName").focus();
-            document.querySelector("#RoomName").onkeyup = function(e){
+            document.querySelector("#username").focus();
+            document.querySelector("#username").onkeyup = function(e){
                 if (e.keyCode == 13){
                     document.querySelector("#enter").click();
                 }
             }
             document.querySelector("#enter").onclick = function(e){
-                var chatroomName = document.querySelector("#RoomName").value;
+                // var chatroomName = document.querySelector("#RoomName").value;
                 var username = document.querySelector("#username").value
-                window.location.pathname = '/chatRoom/' + chatroomName + '/' + username;
+                window.location.pathname = 'chatList/' + username;//'/chatRoom/' + chatroomName + '/' + username;
             }
 
         </script>    

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All chats</title>
+    <style>
+        .items:hover{
+            transform: scale(1.05);
+            transition-duration: 0.3s;
+            box-shadow: 5px 4px 6px black;
+        }
+    </style>
+</head>
+<body>
+
+    {%for room, users in rooms.items%}
+       <a style="text-decoration: none;" href="/chatRoom/{{room}}/{{currentUser}}"> <div class="items" style="text-align: center;background-color: cornflowerblue; margin:2%;padding: 2%;color:white;font-size: large;font-family: 'Courier New', Courier, monospace;font-weight:600;">{{room}} <br>Users:{%for user in users%} {{user}} {%endfor%}  <br> <br></div> </a>
+        
+    {%endfor%}
+    <div style="text-align: center;">
+        <h3> Or create a new custom chat room</h3>
+         <input id="RoomName" type="text" placeholder="Room Name">
+         <input id="enter" type="button" value="Send">
+    </div>
+
+     <script>
+            const roominput = document.querySelector("#RoomName");
+            const enterButton = document.querySelector("#enter");
+            roominput.focus();
+            roominput.onkeyup = function(e){
+                if (e.keyCode == 13){
+                    enterButton.click();
+                }
+            }
+
+            enterButton.onclick = function(e){
+                window.location.pathname = "/chatRoom/" +roominput.value +"/"+"{{currentUser}}";
+            }
+            
+     </script>
+</body>
+</html>

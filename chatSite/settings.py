@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-dw4kz5hlc5rp6*#amv5i9z3%-*c-otpwmc6%xtp#8yfkyhm2p0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.1.133", "127.0.0.1","192.168.4.77"]
+ALLOWED_HOSTS = ["192.168.1.133", "127.0.0.1","192.168.4.77","172.20.10.3"]
 
 
 # Application definition
@@ -75,6 +75,8 @@ WSGI_APPLICATION = 'chatSite.wsgi.application'
 #To be able to run asynchronous code 
 ASGI_APPLICATION = 'chatSite.asgi.application'
 
+
+# RUN docker run -p 6379:6379 -d redis:5 in terminal
 # To be able to have multiple instances connected to the same channel 
 CHANNEL_LAYERS = {
     'default': {
