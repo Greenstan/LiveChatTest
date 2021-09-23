@@ -8,10 +8,13 @@
     <style>
         .userMessage{
             color:blue;
-            margin-left: 450px;
+            margin-left: 1200px;
+            text-align: left;
+            right: 0px;
         }
         .nonUserMessage{
-            margin-left: -450px;
+            margin-left: 200px;
+            text-align: left;
         }
         #delete:hover{
             transform: scale(1.05);
@@ -26,14 +29,17 @@
     {{roomName | json_script:"room" }}
     {{username | json_script:"user" }}
 
-
-    <h1>Welcome to chat: {{roomName}}</h1>
+    <a href="/chatList/{{username}}">Back</a>
+    <h1 style="text-align: center;">Welcome to chat: {{roomName}}</h1>
     
-    <div id="delete" style=" background-color: red;position: fixed;height:5% ; width: 5%;  right: 10px;">
-       <div style="text-align: center;transform: translate(0,75%);"> 
-           <a href="/deleteChatMess/{{roomName}}/{{username}}" style="color:white;text-decoration:none;"> Delete all </a>
+    <!-- Delete messages button -->
+    <!-- <a href="/deleteChatMess/{{roomName}}/{{username}}" style="text-decoration:none;"> -->
+        <div id="delete" style=" background-color: red;position: fixed;height:5% ; width: 5%;  right: 10px;">
+            <div style="text-align: center;transform: translate(0,75%);color:white"> 
+                    Delete all 
+            </div>
         </div>
-    </div>
+    <!-- </a> -->
     <br>
         <div style="text-align:center;font-size: 30px;">
             <div style="margin-bottom: 8%;" id="chatArea">
@@ -65,63 +71,57 @@
         <input style=" height: 50%;"id="enterButton" type="button" value="Send">
     </div>
 
-    
-
-
-
     <script>
         const Room = JSON.parse(document.getElementById('room').textContent);
         const User = JSON.parse(document.getElementById("user").textContent);
 
-        // "{% for mess in messages %}"
-        //     var savedMessages = document.createElement("div");
-        //     document.getElementById("chatArea").appendChild(savedMessages);
-
-        //     if("{{mess.user}}" == User) {
-        //         savedMessages.setAttribute("class", "userMessage");
-
-        //     }else{
-        //         savedMessages.setAttribute("class", "nonUserMessage");
-        //     }
-        //     savedMessages.innerText = ("{{mess.user}}" + ": " + "{{ mess.content }}" + "\n");
-        
-        //     console.log("{{mess}}");
-        // "{%endfor%}"
-
-
+        // connect to websocket (url is in routing.py)
         const webSocket = new WebSocket ('ws://' + window.location.host + '/ws/chat/' +Room+ '/');
 
+        // disconnect 
         webSocket.onclose = function(e){
             console.error("WebSocket is shutting down")
         }
 
+        // Recieve from consumer
         webSocket.onmessage = function(e){
             const receivedMessage = JSON.parse(e.data);
-            console.log(receivedMessage);
-            
-            const newMess = document.createElement("div");
-            document.getElementById("chatArea").appendChild(newMess);
 
-            if(receivedMessage.User == User ) {
-                newMess.setAttribute("class", "userMessage");
+           if (!('delete' in receivedMessage))
+           {
+                const newMess = document.createElement("div");
+                document.getElementById("chatArea").appendChild(newMess);
 
-            }else{
-                newMess.setAttribute("class", "nonUserMessage");
+                if(receivedMessage.User == User )
+                {
+                    newMess.setAttribute("class", "userMessage");
+                }else
+                {
+                    newMess.setAttribute("class", "nonUserMessage");
+                }
+                
+                newMess.innerText = (receivedMessage.User + ": " + receivedMessage.message + "\n");
             }
-            
-            newMess.innerText = (receivedMessage.User + ": " + receivedMessage.message + "\n");
-
-
+            // If the delete dictionary is sent 
+            else if(('delete' in receivedMessage))
+            {
+                // All messages (user and non-user) are deleted 
+                document.getElementById("chatArea").innerHTML = " ";
+            }
         }
 
+        //  Click Enter 
         document.querySelector("#textSpace").focus()
-        document.querySelector("#textSpace").onkeyup = function(e){
-            if (e.keyCode == 13){
+        document.querySelector("#textSpace").onkeyup = function(e)
+        {
+            if (e.keyCode == 13)
+            {
                 document.querySelector("#enterButton").click();
             }
         }
-
-        document.querySelector("#enterButton").onclick = function(e) {     
+        // Send message data 
+        document.querySelector("#enterButton").onclick = function(e) 
+        {     
             var message = document.querySelector("#textSpace").value;
             webSocket.send(JSON.stringify({
                 'message':message,
@@ -131,6 +131,12 @@
             document.querySelector("#textSpace").value = " "; 
         }
 
+        // Delete function
+        document.querySelector("#delete").onclick = function(e)
+        {
+            webSocket.send(JSON.stringify({"delete": Room}));
+        }
+        
 
     </script>
 </body>

@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'chatSite.wsgi.application'
 ASGI_APPLICATION = 'chatSite.asgi.application'
 
 
-# RUN docker run -p 6379:6379 -d redis:5 in terminal
+# RUN (in terminal) docker run -p 6379:6379 -d redis:5 
 # To be able to have multiple instances connected to the same channel 
 CHANNEL_LAYERS = {
     'default': {

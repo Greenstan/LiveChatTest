@@ -13,14 +13,18 @@
         }
     </style>
 </head>
-<body>
-
+<body style="background-color: blanchedalmond;">
+    <a href="/">Back</a>
     {%for room, users in rooms.items%}
-       <a style="text-decoration: none;" href="/chatRoom/{{room}}/{{currentUser}}"> <div class="items" style="text-align: center;background-color: cornflowerblue; margin:2%;padding: 2%;color:white;font-size: large;font-family: 'Courier New', Courier, monospace;font-weight:600;">{{room}} <br>Users:{%for user in users%} {{user}} {%endfor%}  <br> <br></div> </a>
+       <a style="text-decoration: none;" href="/chatRoom/{{room}}/{{currentUser}}"> 
+        <div class="items" style="text-align: center;background-color: cornflowerblue; margin:2%;padding: 2%;color:white;font-size: large;font-family: 'Courier New', Courier, monospace;font-weight:600;">
+            {{room}} <br>Users:{%for user in users%} {{user}} {%endfor%}  <br> <br>
+        </div>
+       </a>
         
     {%endfor%}
     <div style="text-align: center;">
-        <h3> Or create a new custom chat room</h3>
+        <h3> Or join another chat room</h3>
          <input id="RoomName" type="text" placeholder="Room Name">
          <input id="enter" type="button" value="Send">
     </div>

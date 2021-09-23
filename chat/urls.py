@@ -6,6 +6,5 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', home),
     path('chatRoom/<str:roomName>/<str:username>', chatRoom),
-    path('deleteChatMess/<str:roomName>/<str:username>', deleteMessage),
     path('chatList/<str:username>', chatList)
 ]

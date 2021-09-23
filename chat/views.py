@@ -13,19 +13,12 @@ def chatRoom(request, roomName, username):
     
     savedMessages = message.objects.filter(group=roomName)
 
-    # messContent = {}
-    # for m in savedMessages:
-    #     messContent[str(m.user)] = str(m.content)
-
     return render(request, 'chatRoom.html', { "roomName" : roomName, "username":Name , "messages": savedMessages}) 
 
 
-def deleteMessage (request, roomName, username):
-    message.objects.filter(group=roomName).delete()
-    return redirect("/chatRoom/{0}/{1}".format(roomName,username))
-
 def chatList(request, username):
     rooms = {}
+    logUser = user.objects.get_or_create(name=username)
     currentUser = user.objects.get(name=username)
     chats = message.objects.filter(user=currentUser)
     for chat in chats:

@@ -35,27 +35,40 @@ class ChatWsConsumer (WebsocketConsumer):
     # class method to recieve message from the js websocket .send function 
     def receive(self, text_data):
         received = json.loads(text_data)
-        message = received["message"]
-        user = received["user"]
-        room = received["room"]
+        Keys = received.keys()
 
-        self.messToUser(user , message, room)
+        # If a message is received
+        if "message" in Keys :
+            message = received["message"]
+            user = received["user"]
+            room = received["room"]
+
+            # Send message to user
+            self.messToUser(user , message, room)
 
 
-        async_to_sync(self.channel_layer.group_send)(
-            self.roomGroup,
-            {
-                # type dictates which method the data is sent to
-                'type': 'messageReceived',
-                'message':message,
-                'User': user,
-                'room': room
-            
-        })
-        # self.send(text_data = json.dumps({
-        #     'message': message,
-        #     'User': user
-        # }))
+            async_to_sync(self.channel_layer.group_send)(
+                self.roomGroup,
+                {
+                    # type dictates which method the data is sent to
+                    'type': 'messageReceived',
+                    'message':message,
+                    'User': user,
+                    'room': room
+                })
+
+        # If delete button is clicked, this dict will be recieved
+        elif "delete" in Keys :
+            room = received['delete']
+            async_to_sync(self.channel_layer.group_send)(
+                self.roomGroup,
+                {
+                    # type dictates which method the data is sent to
+                    'type': 'messagesDelete',
+                    'room': room
+                })
+
+
 
 # Receives data from receive method 
     def messageReceived(self, data):
@@ -68,8 +81,18 @@ class ChatWsConsumer (WebsocketConsumer):
             'message': message,
             'User': user
         }))
-    
-    # Method to save messages into new message objects 
+
+# Delete ChatRoom messages
+    def messagesDelete(self,data):
+        room = data["room"]
+
+        message.objects.filter(group=room).delete()
+
+        self.send(text_data = json.dumps({
+            "delete":"delete"
+        }))
+
+# Method to save messages into new message objects 
     def messToUser(self, username, text, roomChat):
 
         message.objects.create(content=text, group=roomChat, user=user.objects.get(name=username))
